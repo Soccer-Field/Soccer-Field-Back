@@ -13,6 +13,10 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "User not found"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "Invalid or expired token"),
 
+    // Field related
+    FIELD_NOT_FOUND(HttpStatus.NOT_FOUND, "FIELD_NOT_FOUND", "Field not found"),
+    INVALID_INPUT(HttpStatus.BAD_REQUEST, "INVALID_INPUT", "Invalid field data"),
+
     // Common
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "Internal server error");
 
