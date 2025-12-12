@@ -20,7 +20,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     // TODO: 댓글 목록 조회 구현
-    public List<CommentResponse> getCommentsByReviewId(String reviewId) {
+    public List<CommentResponse> getCommentsByReviewId(Long reviewId) {
         log.info("Fetching comments for review: {}", reviewId);
         // 구현 필요
         throw new UnsupportedOperationException("구현 필요");
@@ -28,7 +28,7 @@ public class CommentService {
 
     // TODO: 댓글 작성 구현
     @Transactional
-    public CommentResponse createComment(String reviewId, CreateCommentRequest request, String userId) {
+    public CommentResponse createComment(Long reviewId, CreateCommentRequest request, Long userId) {
         log.info("Creating comment for review: {} by user: {}", reviewId, userId);
         // 구현 필요
         throw new UnsupportedOperationException("구현 필요");
@@ -36,7 +36,7 @@ public class CommentService {
 
     // TODO: 댓글 수정 구현
     @Transactional
-    public CommentResponse updateComment(String commentId, UpdateCommentRequest request, String userId) {
+    public CommentResponse updateComment(Long commentId, UpdateCommentRequest request, Long userId) {
         log.info("Updating comment: {} by user: {}", commentId, userId);
         // 구현 필요
         throw new UnsupportedOperationException("구현 필요");
@@ -44,7 +44,7 @@ public class CommentService {
 
     // TODO: 댓글 삭제 구현
     @Transactional
-    public void deleteComment(String commentId, String userId) {
+    public void deleteComment(Long commentId, Long userId) {
         log.info("Deleting comment: {} by user: {}", commentId, userId);
         // 구현 필요
         throw new UnsupportedOperationException("구현 필요");

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FieldRepository extends JpaRepository<Field, String> {
+public interface FieldRepository extends JpaRepository<Field, Long> {
 
     List<Field> findByStatus(FieldStatus status);
 

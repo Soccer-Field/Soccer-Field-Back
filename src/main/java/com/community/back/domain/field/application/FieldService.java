@@ -40,7 +40,7 @@ public class FieldService {
     /**
      * 축구장 상세 조회
      */
-    public FieldDetailResponse getFieldById(String fieldId) {
+    public FieldDetailResponse getFieldById(Long fieldId) {
         log.info("Fetching field details for id: {}", fieldId);
         Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FIELD_NOT_FOUND));
@@ -102,7 +102,7 @@ public class FieldService {
      * 축구장 승인 (관리자용)
      */
     @Transactional
-    public ApproveFieldResponse approveField(String fieldId) {
+    public ApproveFieldResponse approveField(Long fieldId) {
         log.info("Approving field with id: {}", fieldId);
 
         Field field = fieldRepository.findById(fieldId)

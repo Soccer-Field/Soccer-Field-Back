@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "fields")
@@ -16,8 +15,9 @@ import java.util.UUID;
 public class Field {
 
     @Id
-    @Column(name = "field_id", columnDefinition = "VARCHAR(36)")
-    private String fieldId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "field_id")
+    private Long fieldId;
 
     @Column(nullable = false, length = 200)
     private String name;
@@ -58,9 +58,6 @@ public class Field {
 
     @PrePersist
     protected void onCreate() {
-        if (this.fieldId == null) {
-            this.fieldId = UUID.randomUUID().toString();
-        }
         if (this.rating == null) {
             this.rating = 0.0;
         }

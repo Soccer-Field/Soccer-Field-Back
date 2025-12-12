@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 @Schema(description = "댓글 응답")
 public class CommentResponse {
 
-    @Schema(description = "댓글 ID", example = "comment-uuid-1")
-    private String commentId;
+    @Schema(description = "댓글 ID", example = "1")
+    private Long commentId;
 
-    @Schema(description = "리뷰 ID", example = "review-uuid-1")
-    private String reviewId;
+    @Schema(description = "리뷰 ID", example = "1")
+    private Long reviewId;
 
-    @Schema(description = "작성자 ID", example = "user-uuid-1")
-    private String userId;
+    @Schema(description = "작성자 ID", example = "1")
+    private Long userId;
 
     @Schema(description = "댓글 내용", example = "좋은 리뷰 감사합니다!")
     private String content;

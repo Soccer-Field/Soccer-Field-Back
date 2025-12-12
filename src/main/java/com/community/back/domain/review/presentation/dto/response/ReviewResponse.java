@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 @Schema(description = "리뷰 응답")
 public class ReviewResponse {
 
-    @Schema(description = "리뷰 ID", example = "review-uuid-1")
-    private String reviewId;
+    @Schema(description = "리뷰 ID", example = "1")
+    private Long reviewId;
 
-    @Schema(description = "축구장 ID", example = "field-uuid-1")
-    private String fieldId;
+    @Schema(description = "축구장 ID", example = "1")
+    private Long fieldId;
 
-    @Schema(description = "작성자 ID", example = "user-uuid-1")
-    private String userId;
+    @Schema(description = "작성자 ID", example = "1")
+    private Long userId;
 
     @Schema(description = "리뷰 내용", example = "잔디 상태가 좋고 시설이 깨끗합니다.")
     private String content;

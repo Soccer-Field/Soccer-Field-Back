@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, String> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     // TODO: 필요한 쿼리 메서드 구현
-    List<Comment> findByReviewId(String reviewId);
+    List<Comment> findByReviewId(Long reviewId);
 }

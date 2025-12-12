@@ -30,7 +30,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @Operation(summary = "리뷰 목록 조회", description = "특정 축구장의 리뷰 목록을 조회합니다.")
+    @Operation(summary = "리뷰 목록 조회", description = "특정 축구장의 리뷰 목록을 조회합니다. 무한 스크롤을 위해 lastId를 사용합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ReviewResponse.class))))
@@ -38,9 +38,11 @@ public class ReviewController {
     @GetMapping("/fields/{fieldId}/reviews")
     public ResponseEntity<List<ReviewResponse>> getReviews(
             @Parameter(description = "축구장 ID", required = true)
-            @PathVariable String fieldId) {
-        log.info("GET /fields/{}/reviews - 리뷰 목록 조회", fieldId);
-        List<ReviewResponse> reviews = reviewService.getReviewsByFieldId(fieldId);
+            @PathVariable Long fieldId,
+            @Parameter(description = "마지막 리뷰 ID (무한 스크롤용)", required = false)
+            @RequestParam(required = false) Long lastId) {
+        log.info("GET /fields/{}/reviews?lastId={} - 리뷰 목록 조회", fieldId, lastId);
+        List<ReviewResponse> reviews = reviewService.getReviewsByFieldId(fieldId, lastId);
         return ResponseEntity.ok(reviews);
     }
 
@@ -54,7 +56,7 @@ public class ReviewController {
     @PostMapping("/fields/{fieldId}/reviews")
     public ResponseEntity<ReviewResponse> createReview(
             @Parameter(description = "축구장 ID", required = true)
-            @PathVariable String fieldId,
+            @PathVariable Long fieldId,
             @Valid @RequestBody CreateReviewRequest request) {
         log.info("POST /fields/{}/reviews - 리뷰 작성", fieldId);
         // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
@@ -72,7 +74,7 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}")
     public ResponseEntity<ReviewResponse> updateReview(
             @Parameter(description = "리뷰 ID", required = true)
-            @PathVariable String reviewId,
+            @PathVariable Long reviewId,
             @Valid @RequestBody UpdateReviewRequest request) {
         log.info("PUT /reviews/{} - 리뷰 수정", reviewId);
         // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
@@ -89,7 +91,7 @@ public class ReviewController {
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
             @Parameter(description = "리뷰 ID", required = true)
-            @PathVariable String reviewId) {
+            @PathVariable Long reviewId) {
         log.info("DELETE /reviews/{} - 리뷰 삭제", reviewId);
         // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
         reviewService.deleteReview(reviewId, null);
