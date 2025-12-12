@@ -27,11 +27,25 @@ public class CommentService {
     private final ReviewRepository reviewRepository;
     private final CommentDomainService commentDomainService;
 
-    // TODO: 댓글 목록 조회 구현
+    /**
+     * 특정 리뷰의 댓글 목록 조회
+     * @param reviewId 리뷰 ID
+     * @return 댓글 목록 (생성일시 오름차순)
+     */
     public List<CommentResponse> getCommentsByReviewId(Long reviewId) {
         log.info("Fetching comments for review: {}", reviewId);
-        // 구현 필요
-        throw new UnsupportedOperationException("구현 필요");
+
+        // 리뷰 존재 여부 확인
+        reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        // 댓글 목록 조회 (생성일시 오름차순)
+        List<Comment> comments = commentRepository.findByReviewIdOrderByCreatedAtAsc(reviewId);
+        log.info("Found {} comments for review: {}", comments.size(), reviewId);
+
+        return comments.stream()
+                .map(CommentResponse::from)
+                .toList();
     }
 
     /**

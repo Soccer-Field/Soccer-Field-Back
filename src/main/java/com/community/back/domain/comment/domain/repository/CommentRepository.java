@@ -9,6 +9,10 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    // TODO: 필요한 쿼리 메서드 구현
-    List<Comment> findByReviewId(Long reviewId);
+    /**
+     * 특정 리뷰의 댓글을 생성일시 기준 오름차순으로 조회
+     * @param reviewId 리뷰 ID
+     * @return 정렬된 댓글 목록
+     */
+    List<Comment> findByReviewIdOrderByCreatedAtAsc(Long reviewId);
 }
