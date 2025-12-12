@@ -78,19 +78,53 @@ public class ReviewService {
         }
     }
 
-    // TODO: 리뷰 수정 구현
     @Transactional
     public ReviewResponse updateReview(Long reviewId, UpdateReviewRequest request, Long userId) {
         log.info("Updating review: {} by user: {}", reviewId, userId);
-        // 구현 필요
-        throw new UnsupportedOperationException("구현 필요");
+
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new com.community.back.global.exception.CustomException(
+                        com.community.back.global.exception.ErrorCode.REVIEW_NOT_FOUND));
+
+        // 작성자 권한 확인
+        if (!review.getUserId().equals(userId)) {
+            throw new com.community.back.global.exception.CustomException(
+                    com.community.back.global.exception.ErrorCode.UNAUTHORIZED_REVIEW_ACCESS);
+        }
+
+        // 리뷰 수정
+        review.update(request.getContent(), request.getRating());
+        log.info("Review {} updated successfully", reviewId);
+
+        // 축구장 평점 업데이트
+        updateFieldRating(review.getFieldId());
+
+        return ReviewResponse.from(review);
     }
 
-    // TODO: 리뷰 삭제 구현
     @Transactional
     public void deleteReview(Long reviewId, Long userId) {
         log.info("Deleting review: {} by user: {}", reviewId, userId);
-        // 구현 필요
-        throw new UnsupportedOperationException("구현 필요");
+
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new com.community.back.global.exception.CustomException(
+                        com.community.back.global.exception.ErrorCode.REVIEW_NOT_FOUND));
+
+        // 작성자 권한 확인
+        if (!review.getUserId().equals(userId)) {
+            throw new com.community.back.global.exception.CustomException(
+                    com.community.back.global.exception.ErrorCode.UNAUTHORIZED_REVIEW_ACCESS);
+        }
+
+        Long fieldId = review.getFieldId();
+
+        // 리뷰 삭제
+        reviewRepository.delete(review);
+        log.info("Review {} deleted successfully", reviewId);
+
+        // 축구장 평점 업데이트
+        updateFieldRating(fieldId);
     }
 }

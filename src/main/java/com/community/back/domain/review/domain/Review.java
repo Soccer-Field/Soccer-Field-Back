@@ -56,8 +56,8 @@ public class Review {
         this.rating = rating;
     }
 
-    // TODO: 리뷰 수정 메서드 구현
     public void update(String content, Integer rating) {
-        // 구현 필요
+        this.content = content;
+        this.rating = rating;
     }
 }

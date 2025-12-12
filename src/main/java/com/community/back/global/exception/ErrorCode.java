@@ -17,6 +17,10 @@ public enum ErrorCode {
     FIELD_NOT_FOUND(HttpStatus.NOT_FOUND, "FIELD_NOT_FOUND", "Field not found"),
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "INVALID_INPUT", "Invalid field data"),
 
+    // Review related
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "Review not found"),
+    UNAUTHORIZED_REVIEW_ACCESS(HttpStatus.FORBIDDEN, "UNAUTHORIZED_REVIEW_ACCESS", "Unauthorized to access this review"),
+
     // Common
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "Internal server error");
 
