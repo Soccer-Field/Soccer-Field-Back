@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @Schema(description = "댓글 작성 요청")
 public class CreateCommentRequest {
 
+    @Schema(description = "부모 댓글 ID (대댓글인 경우)", example = "1", nullable = true)
+    private Long parentId;
+
     @NotBlank(message = "댓글 내용은 필수입니다")
     @Schema(description = "댓글 내용", example = "좋은 리뷰 감사합니다!")
     private String content;

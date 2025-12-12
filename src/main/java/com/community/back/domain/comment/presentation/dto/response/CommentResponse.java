@@ -25,6 +25,9 @@ public class CommentResponse {
     @Schema(description = "작성자 ID", example = "1")
     private Long userId;
 
+    @Schema(description = "부모 댓글 ID (대댓글인 경우)", example = "1", nullable = true)
+    private Long parentId;
+
     @Schema(description = "댓글 내용", example = "좋은 리뷰 감사합니다!")
     private String content;
 
@@ -39,6 +42,7 @@ public class CommentResponse {
                 .commentId(comment.getCommentId())
                 .reviewId(comment.getReviewId())
                 .userId(comment.getUserId())
+                .parentId(comment.getParentId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())

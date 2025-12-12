@@ -4,6 +4,7 @@ import com.community.back.domain.comment.application.CommentService;
 import com.community.back.domain.comment.presentation.dto.request.CreateCommentRequest;
 import com.community.back.domain.comment.presentation.dto.request.UpdateCommentRequest;
 import com.community.back.domain.comment.presentation.dto.response.CommentResponse;
+import com.community.back.domain.comment.presentation.dto.response.CreateCommentResponse;
 import com.community.back.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,18 +48,18 @@ public class CommentController {
     @Operation(summary = "댓글 작성", description = "리뷰에 댓글을 작성합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "작성 성공",
-                    content = @Content(schema = @Schema(implementation = CommentResponse.class))),
+                    content = @Content(schema = @Schema(implementation = CreateCommentResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/reviews/{reviewId}/comments")
-    public ResponseEntity<CommentResponse> createComment(
+    public ResponseEntity<CreateCommentResponse> createComment(
             @Parameter(description = "리뷰 ID", required = true)
             @PathVariable Long reviewId,
             @Valid @RequestBody CreateCommentRequest request) {
         log.info("POST /reviews/{}/comments - 댓글 작성", reviewId);
         // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
-        CommentResponse response = commentService.createComment(reviewId, request, null);
+        CreateCommentResponse response = commentService.createComment(reviewId, request, null);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
