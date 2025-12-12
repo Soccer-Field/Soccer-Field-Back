@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "reviews")
@@ -16,14 +15,15 @@ import java.util.UUID;
 public class Review {
 
     @Id
-    @Column(name = "review_id", columnDefinition = "VARCHAR(36)")
-    private String reviewId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id")
+    private Long reviewId;
 
-    @Column(name = "field_id", nullable = false, columnDefinition = "VARCHAR(36)")
-    private String fieldId;
+    @Column(name = "field_id", nullable = false)
+    private Long fieldId;
 
-    @Column(name = "user_id", nullable = false, columnDefinition = "VARCHAR(36)")
-    private String userId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -39,9 +39,6 @@ public class Review {
 
     @PrePersist
     protected void onCreate() {
-        if (this.reviewId == null) {
-            this.reviewId = UUID.randomUUID().toString();
-        }
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -52,15 +49,15 @@ public class Review {
     }
 
     @Builder
-    public Review(String fieldId, String userId, String content, Integer rating) {
+    public Review(Long fieldId, Long userId, String content, Integer rating) {
         this.fieldId = fieldId;
         this.userId = userId;
         this.content = content;
         this.rating = rating;
     }
 
-    // TODO: 리뷰 수정 메서드 구현
     public void update(String content, Integer rating) {
-        // 구현 필요
+        this.content = content;
+        this.rating = rating;
     }
 }

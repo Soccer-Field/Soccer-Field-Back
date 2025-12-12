@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Schema(description = "축구장 목록 항목")
 public class FieldListResponse {
 
-    @Schema(description = "축구장 ID", example = "field-uuid-1")
-    private String id;
+    @Schema(description = "축구장 ID", example = "1")
+    private Long id;
 
     @Schema(description = "축구장 이름", example = "서울 월드컵 경기장 풋살장")
     private String name;

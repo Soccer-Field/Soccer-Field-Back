@@ -38,7 +38,7 @@ public class CommentController {
     @GetMapping("/reviews/{reviewId}/comments")
     public ResponseEntity<List<CommentResponse>> getComments(
             @Parameter(description = "리뷰 ID", required = true)
-            @PathVariable String reviewId) {
+            @PathVariable Long reviewId) {
         log.info("GET /reviews/{}/comments - 댓글 목록 조회", reviewId);
         List<CommentResponse> comments = commentService.getCommentsByReviewId(reviewId);
         return ResponseEntity.ok(comments);
@@ -54,7 +54,7 @@ public class CommentController {
     @PostMapping("/reviews/{reviewId}/comments")
     public ResponseEntity<CommentResponse> createComment(
             @Parameter(description = "리뷰 ID", required = true)
-            @PathVariable String reviewId,
+            @PathVariable Long reviewId,
             @Valid @RequestBody CreateCommentRequest request) {
         log.info("POST /reviews/{}/comments - 댓글 작성", reviewId);
         // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
@@ -72,7 +72,7 @@ public class CommentController {
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(
             @Parameter(description = "댓글 ID", required = true)
-            @PathVariable String commentId,
+            @PathVariable Long commentId,
             @Valid @RequestBody UpdateCommentRequest request) {
         log.info("PUT /comments/{} - 댓글 수정", commentId);
         // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
@@ -89,7 +89,7 @@ public class CommentController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @Parameter(description = "댓글 ID", required = true)
-            @PathVariable String commentId) {
+            @PathVariable Long commentId) {
         log.info("DELETE /comments/{} - 댓글 삭제", commentId);
         // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
         commentService.deleteComment(commentId, null);

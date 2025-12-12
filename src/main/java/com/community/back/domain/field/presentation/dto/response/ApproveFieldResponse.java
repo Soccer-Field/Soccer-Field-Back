@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Schema(description = "축구장 승인 응답")
 public class ApproveFieldResponse {
 
-    @Schema(description = "축구장 ID", example = "field-uuid-1")
-    private String fieldId;
+    @Schema(description = "축구장 ID", example = "1")
+    private Long fieldId;
 
     @Schema(description = "승인 상태", example = "approved")
     private String status;

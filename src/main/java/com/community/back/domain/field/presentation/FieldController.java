@@ -55,7 +55,7 @@ public class FieldController {
     @GetMapping("/{id}")
     public ResponseEntity<FieldDetailResponse> getFieldById(
             @Parameter(description = "축구장 ID", required = true)
-            @PathVariable String id) {
+            @PathVariable Long id) {
         log.info("GET /fields/{} - 축구장 상세 조회", id);
         FieldDetailResponse field = fieldService.getFieldById(id);
         return ResponseEntity.ok(field);
@@ -100,7 +100,7 @@ public class FieldController {
     @PatchMapping("/{id}/approve")
     public ResponseEntity<ApproveFieldResponse> approveField(
             @Parameter(description = "축구장 ID", required = true)
-            @PathVariable String id) {
+            @PathVariable Long id) {
         log.info("PATCH /fields/{}/approve - 축구장 승인", id);
         ApproveFieldResponse response = fieldService.approveField(id);
         return ResponseEntity.ok(response);

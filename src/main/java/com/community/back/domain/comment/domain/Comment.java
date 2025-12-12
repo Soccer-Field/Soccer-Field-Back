@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "comments")
@@ -16,14 +15,15 @@ import java.util.UUID;
 public class Comment {
 
     @Id
-    @Column(name = "comment_id", columnDefinition = "VARCHAR(36)")
-    private String commentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
+    private Long commentId;
 
-    @Column(name = "review_id", nullable = false, columnDefinition = "VARCHAR(36)")
-    private String reviewId;
+    @Column(name = "review_id", nullable = false)
+    private Long reviewId;
 
-    @Column(name = "user_id", nullable = false, columnDefinition = "VARCHAR(36)")
-    private String userId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -36,9 +36,6 @@ public class Comment {
 
     @PrePersist
     protected void onCreate() {
-        if (this.commentId == null) {
-            this.commentId = UUID.randomUUID().toString();
-        }
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -49,7 +46,7 @@ public class Comment {
     }
 
     @Builder
-    public Comment(String reviewId, String userId, String content) {
+    public Comment(Long reviewId, Long userId, String content) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.content = content;
