@@ -76,19 +76,49 @@ public class CommentService {
         return CreateCommentResponse.from(savedComment);
     }
 
-    // TODO: 댓글 수정 구현
+    /**
+     * 댓글 수정
+     * @param commentId 댓글 ID
+     * @param request 수정 요청
+     * @param userId 사용자 ID
+     * @return 수정된 댓글 정보
+     */
     @Transactional
     public CommentResponse updateComment(Long commentId, UpdateCommentRequest request, Long userId) {
         log.info("Updating comment: {} by user: {}", commentId, userId);
-        // 구현 필요
-        throw new UnsupportedOperationException("구현 필요");
+
+        // 댓글 조회
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        // 댓글 소유자 검증 (Domain Service에 위임)
+        commentDomainService.validateCommentOwner(comment, userId != null ? userId : 1L);
+
+        // 댓글 내용 수정 (도메인 메서드 사용)
+        comment.update(request.getContent());
+        log.info("Comment {} updated successfully", commentId);
+
+        return CommentResponse.from(comment);
     }
 
-    // TODO: 댓글 삭제 구현
+    /**
+     * 댓글 삭제
+     * @param commentId 댓글 ID
+     * @param userId 사용자 ID
+     */
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         log.info("Deleting comment: {} by user: {}", commentId, userId);
-        // 구현 필요
-        throw new UnsupportedOperationException("구현 필요");
+
+        // 댓글 조회
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        // 댓글 소유자 검증 (Domain Service에 위임)
+        commentDomainService.validateCommentOwner(comment, userId != null ? userId : 1L);
+
+        // 댓글 삭제
+        commentRepository.delete(comment);
+        log.info("Comment {} deleted successfully", commentId);
     }
 }
