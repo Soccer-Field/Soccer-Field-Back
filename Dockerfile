@@ -1,33 +1,29 @@
-# ===============================
-# Build stage
-# ===============================
-FROM eclipse-temurin:17-jdk AS build
-
+# ===== 1) Build stage =====
+FROM gradle:8.7-jdk17 AS build
 WORKDIR /app
 
-# Gradle Wrapper (권한 포함해서 복사)
-COPY --chmod=755 gradlew gradlew
-COPY gradle ./gradle
-COPY build.gradle settings.gradle ./
+# 의존성 캐시 최적화
+COPY build.gradle settings.gradle gradlew /app/
+COPY gradle /app/gradle
+RUN ./gradlew --no-daemon dependencies || true
 
-# 의존성 캐시
-RUN ./gradlew dependencies --no-daemon || true
+# 소스 복사 후 빌드
+COPY . /app
+RUN ./gradlew --no-daemon clean bootJar
 
-# 소스 복사
-COPY src ./src
-
-# 빌드
-RUN ./gradlew clean build -x test --no-daemon
-
-
-# ===============================
-# Run stage
-# ===============================
+# ===== 2) Run stage =====
 FROM eclipse-temurin:17-jre
-
 WORKDIR /app
 
+# (선택) 보안/권한: non-root 유저
+RUN useradd -m appuser
+USER appuser
+
+# 빌드 산출물 복사
 COPY --from=build /app/build/libs/*.jar app.jar
 
+# (선택) JVM 옵션은 환경변수로 주입 가능
+ENV JAVA_OPTS=""
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
