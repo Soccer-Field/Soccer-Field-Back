@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class FieldService {
 
     private final FieldRepository fieldRepository;
+    private final GeocodingService geocodingService;
 
     /**
      * 승인된 축구장 목록 조회
@@ -32,6 +33,17 @@ public class FieldService {
     public List<FieldListResponse> getAllFields() {
         log.info("Fetching all approved fields");
         return fieldRepository.findByStatus(FieldStatus.APPROVED)
+                .stream()
+                .map(FieldListResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 승인 대기 중인 축구장 목록 조회 (관리자용)
+     */
+    public List<FieldListResponse> getPendingFields() {
+        log.info("Fetching pending fields");
+        return fieldRepository.findByStatus(FieldStatus.PENDING_APPROVAL)
                 .stream()
                 .map(FieldListResponse::from)
                 .collect(Collectors.toList());
@@ -72,10 +84,10 @@ public class FieldService {
     public CreateFieldResponse createField(CreateFieldRequest request) {
         log.info("Creating new field registration request: {}", request.getName());
 
-        // 주소 기반으로 위경도 변환 (간단한 구현 - 실제로는 Geocoding API 사용 필요)
-        // 여기서는 임시로 기본값 설정
-        Double lat = 37.5665; // 서울시청 위도 (기본값)
-        Double lng = 126.9780; // 서울시청 경도 (기본값)
+        // 주소 기반으로 위경도 변환 (Kakao Geocoding API 사용)
+        GeocodingService.Coordinates coordinates = geocodingService.getCoordinatesFromAddress(request.getAddress());
+        Double lat = coordinates.lat;
+        Double lng = coordinates.lng;
 
         Field field = Field.builder()
                 .name(request.getName())

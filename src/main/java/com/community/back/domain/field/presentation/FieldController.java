@@ -45,6 +45,18 @@ public class FieldController {
         return ResponseEntity.ok(fields);
     }
 
+    @Operation(summary = "승인 대기 중인 축구장 목록 조회", description = "관리자가 승인 대기 중인 축구장 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = FieldListResponse.class))))
+    })
+    @GetMapping("/pending")
+    public ResponseEntity<List<FieldListResponse>> getPendingFields() {
+        log.info("GET /fields/pending - 승인 대기 중인 축구장 목록 조회");
+        List<FieldListResponse> fields = fieldService.getPendingFields();
+        return ResponseEntity.ok(fields);
+    }
+
     @Operation(summary = "축구장 상세 조회", description = "특정 축구장의 상세 정보를 조회합니다. 잔디 상태, 추천 축구화 등 상세 정보를 포함합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
