@@ -22,8 +22,11 @@ public class Comment {
     @Column(name = "review_id", nullable = false)
     private Long reviewId;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, length = 36)
     private Long userId;
+
+    @Column(name = "parent_id")
+    private Long parentId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -46,14 +49,41 @@ public class Comment {
     }
 
     @Builder
-    public Comment(Long reviewId, Long userId, String content) {
+    private Comment(Long reviewId, Long userId, Long parentId, String content) {
         this.reviewId = reviewId;
         this.userId = userId;
+        this.parentId = parentId;
         this.content = content;
     }
 
-    // TODO: 댓글 수정 메서드 구현
+    /**
+     * 댓글 생성 정적 팩토리 메서드
+     * @param reviewId 리뷰 ID
+     * @param userId 작성자 ID
+     * @param parentId 부모 댓글 ID (null이면 최상위 댓글)
+     * @param content 댓글 내용
+     * @return 생성된 Comment 객체
+     */
+    public static Comment create(Long reviewId, Long userId, Long parentId, String content) {
+        return Comment.builder()
+                .reviewId(reviewId)
+                .userId(userId)
+                .parentId(parentId)
+                .content(content)
+                .build();
+    }
+
+    /**
+     * 최상위 댓글인지 확인
+     */
+    public boolean isRoot() {
+        return this.parentId == null;
+    }
+
+    /**
+     * 댓글 내용 수정
+     */
     public void update(String content) {
-        // 구현 필요
+        this.content = content;
     }
 }

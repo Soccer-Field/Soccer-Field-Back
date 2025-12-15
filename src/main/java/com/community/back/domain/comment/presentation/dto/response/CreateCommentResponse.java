@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "댓글 응답")
-public class CommentResponse {
+@Schema(description = "댓글 작성 응답")
+public class CreateCommentResponse {
 
     @Schema(description = "댓글 ID", example = "1")
     private Long commentId;
@@ -28,41 +28,36 @@ public class CommentResponse {
     @Schema(description = "작성자 이름", example = "홍길동")
     private String userName;
 
-    @Schema(description = "부모 댓글 ID (대댓글인 경우)", example = "1", nullable = true)
-    private Long parentId;
-
     @Schema(description = "댓글 내용", example = "좋은 리뷰 감사합니다!")
     private String content;
 
     @Schema(description = "작성일시")
     private LocalDateTime createdAt;
 
-    @Schema(description = "수정일시")
-    private LocalDateTime updatedAt;
+    @Schema(description = "부모 댓글 ID (대댓글인 경우)", example = "1", nullable = true)
+    private Long parentId;
 
-    public static CommentResponse from(Comment comment) {
-        return CommentResponse.builder()
+    public static CreateCommentResponse from(Comment comment) {
+        return CreateCommentResponse.builder()
                 .commentId(comment.getCommentId())
                 .reviewId(comment.getReviewId())
                 .userId(comment.getUserId())
                 .userName(null) // userName은 Service에서 설정
-                .parentId(comment.getParentId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
-                .updatedAt(comment.getUpdatedAt())
+                .parentId(comment.getParentId())
                 .build();
     }
 
-    public static CommentResponse from(Comment comment, String userName) {
-        return CommentResponse.builder()
+    public static CreateCommentResponse from(Comment comment, String userName) {
+        return CreateCommentResponse.builder()
                 .commentId(comment.getCommentId())
                 .reviewId(comment.getReviewId())
                 .userId(comment.getUserId())
                 .userName(userName)
-                .parentId(comment.getParentId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
-                .updatedAt(comment.getUpdatedAt())
+                .parentId(comment.getParentId())
                 .build();
     }
 }

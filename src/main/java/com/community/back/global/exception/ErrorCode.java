@@ -21,6 +21,11 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "Review not found"),
     UNAUTHORIZED_REVIEW_ACCESS(HttpStatus.FORBIDDEN, "UNAUTHORIZED_REVIEW_ACCESS", "Unauthorized to access this review"),
 
+    // Comment related
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_NOT_FOUND", "Comment not found"),
+    INVALID_COMMENT_DEPTH(HttpStatus.BAD_REQUEST, "INVALID_COMMENT_DEPTH", "Comment depth exceeded. Only two-level comments are allowed"),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "FORBIDDEN", "Access forbidden"),
+
     // Common
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "Internal server error");
 

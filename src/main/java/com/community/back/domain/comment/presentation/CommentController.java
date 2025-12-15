@@ -4,6 +4,7 @@ import com.community.back.domain.comment.application.CommentService;
 import com.community.back.domain.comment.presentation.dto.request.CreateCommentRequest;
 import com.community.back.domain.comment.presentation.dto.request.UpdateCommentRequest;
 import com.community.back.domain.comment.presentation.dto.response.CommentResponse;
+import com.community.back.domain.comment.presentation.dto.response.CreateCommentResponse;
 import com.community.back.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,18 +50,18 @@ public class CommentController {
     @Operation(summary = "댓글 작성", description = "리뷰에 댓글을 작성합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "작성 성공",
-                    content = @Content(schema = @Schema(implementation = CommentResponse.class))),
+                    content = @Content(schema = @Schema(implementation = CreateCommentResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/reviews/{reviewId}/comments")
-    public ResponseEntity<CommentResponse> createComment(
+    public ResponseEntity<CreateCommentResponse> createComment(
             @Parameter(description = "리뷰 ID", required = true)
             @PathVariable Long reviewId,
             @Valid @RequestBody CreateCommentRequest request) {
         log.info("POST /reviews/{}/comments - 댓글 작성", reviewId);
-        // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
-        CommentResponse response = commentService.createComment(reviewId, request, null);
+        Long userId = getUserIdFromAuth();
+        CreateCommentResponse response = commentService.createComment(reviewId, request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -75,8 +78,8 @@ public class CommentController {
             @PathVariable Long commentId,
             @Valid @RequestBody UpdateCommentRequest request) {
         log.info("PUT /comments/{} - 댓글 수정", commentId);
-        // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
-        CommentResponse response = commentService.updateComment(commentId, request, null);
+        Long userId = getUserIdFromAuth();
+        CommentResponse response = commentService.updateComment(commentId, request, userId);
         return ResponseEntity.ok(response);
     }
 
@@ -91,8 +94,30 @@ public class CommentController {
             @Parameter(description = "댓글 ID", required = true)
             @PathVariable Long commentId) {
         log.info("DELETE /comments/{} - 댓글 삭제", commentId);
-        // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
-        commentService.deleteComment(commentId, null);
+        Long userId = getUserIdFromAuth();
+        commentService.deleteComment(commentId, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    private Long getUserIdFromAuth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Authentication: {}", authentication);
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.error("User is not authenticated");
+            throw new com.community.back.global.exception.CustomException(
+                com.community.back.global.exception.ErrorCode.INVALID_TOKEN);
+        }
+
+        String userIdStr = authentication.getPrincipal().toString();
+        log.info("UserId from authentication: {}", userIdStr);
+
+        try {
+            return Long.parseLong(userIdStr);
+        } catch (NumberFormatException e) {
+            log.error("Failed to parse userId: {}", userIdStr);
+            throw new com.community.back.global.exception.CustomException(
+                com.community.back.global.exception.ErrorCode.INVALID_TOKEN);
+        }
     }
 }
