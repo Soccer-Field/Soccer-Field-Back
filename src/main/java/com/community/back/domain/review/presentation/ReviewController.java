@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,8 +61,8 @@ public class ReviewController {
             @PathVariable Long fieldId,
             @Valid @RequestBody CreateReviewRequest request) {
         log.info("POST /fields/{}/reviews - 리뷰 작성", fieldId);
-        // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
-        ReviewResponse response = reviewService.createReview(fieldId, request, null);
+        Long userId = getUserIdFromAuth();
+        ReviewResponse response = reviewService.createReview(fieldId, request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -77,8 +79,8 @@ public class ReviewController {
             @PathVariable Long reviewId,
             @Valid @RequestBody UpdateReviewRequest request) {
         log.info("PUT /reviews/{} - 리뷰 수정", reviewId);
-        // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
-        ReviewResponse response = reviewService.updateReview(reviewId, request, null);
+        Long userId = getUserIdFromAuth();
+        ReviewResponse response = reviewService.updateReview(reviewId, request, userId);
         return ResponseEntity.ok(response);
     }
 
@@ -93,8 +95,30 @@ public class ReviewController {
             @Parameter(description = "리뷰 ID", required = true)
             @PathVariable Long reviewId) {
         log.info("DELETE /reviews/{} - 리뷰 삭제", reviewId);
-        // TODO: 인증된 사용자 ID 가져오기 (현재는 임시로 null)
-        reviewService.deleteReview(reviewId, null);
+        Long userId = getUserIdFromAuth();
+        reviewService.deleteReview(reviewId, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    private Long getUserIdFromAuth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Authentication: {}", authentication);
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.error("User is not authenticated");
+            throw new com.community.back.global.exception.CustomException(
+                com.community.back.global.exception.ErrorCode.INVALID_TOKEN);
+        }
+
+        String userIdStr = authentication.getPrincipal().toString();
+        log.info("UserId from authentication: {}", userIdStr);
+
+        try {
+            return Long.parseLong(userIdStr);
+        } catch (NumberFormatException e) {
+            log.error("Failed to parse userId: {}", userIdStr);
+            throw new com.community.back.global.exception.CustomException(
+                com.community.back.global.exception.ErrorCode.INVALID_TOKEN);
+        }
     }
 }

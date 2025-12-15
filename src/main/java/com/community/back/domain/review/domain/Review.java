@@ -22,7 +22,7 @@ public class Review {
     @Column(name = "field_id", nullable = false)
     private Long fieldId;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, length = 36)
     private Long userId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -30,6 +30,18 @@ public class Review {
 
     @Column(nullable = false)
     private Integer rating;
+
+    @Column(name = "grass_type", nullable = false, length = 10)
+    private String grassType;
+
+    @Column(name = "grass_conditions", columnDefinition = "TEXT")
+    private String grassConditions;
+
+    @Column(name = "recommended_shoe", nullable = false, length = 10)
+    private String recommendedShoe;
+
+    @Column(name = "shoe_link", columnDefinition = "TEXT")
+    private String shoeLink;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -49,15 +61,25 @@ public class Review {
     }
 
     @Builder
-    public Review(Long fieldId, Long userId, String content, Integer rating) {
+    public Review(Long fieldId, Long userId, String content, Integer rating,
+                  String grassType, String grassConditions, String recommendedShoe, String shoeLink) {
         this.fieldId = fieldId;
         this.userId = userId;
         this.content = content;
         this.rating = rating;
+        this.grassType = grassType;
+        this.grassConditions = grassConditions;
+        this.recommendedShoe = recommendedShoe;
+        this.shoeLink = shoeLink;
     }
 
-    public void update(String content, Integer rating) {
+    public void update(String content, Integer rating, String grassType,
+                      String grassConditions, String recommendedShoe, String shoeLink) {
         this.content = content;
         this.rating = rating;
+        this.grassType = grassType;
+        this.grassConditions = grassConditions;
+        this.recommendedShoe = recommendedShoe;
+        this.shoeLink = shoeLink;
     }
 }
