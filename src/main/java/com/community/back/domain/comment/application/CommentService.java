@@ -26,6 +26,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ReviewRepository reviewRepository;
     private final CommentDomainService commentDomainService;
+    private final com.community.back.domain.auth.domain.repository.UserRepository userRepository;
 
     /**
      * 특정 리뷰의 댓글 목록 조회
@@ -44,7 +45,12 @@ public class CommentService {
         log.info("Found {} comments for review: {}", comments.size(), reviewId);
 
         return comments.stream()
-                .map(CommentResponse::from)
+                .map(comment -> {
+                    String userName = userRepository.findById(String.valueOf(comment.getUserId()))
+                            .map(com.community.back.domain.auth.domain.User::getName)
+                            .orElse("알 수 없음");
+                    return CommentResponse.from(comment, userName);
+                })
                 .toList();
     }
 
@@ -64,7 +70,7 @@ public class CommentService {
         // 댓글 생성 (Domain Service에 위임)
         Comment comment = commentDomainService.createComment(
                 reviewId,
-                userId != null ? userId : 1L, // TODO: 실제 인증된 사용자 ID로 대체
+                userId, // TODO: 실제 인증된 사용자 ID로 대체
                 request.getParentId(),
                 request.getContent()
         );
@@ -73,7 +79,12 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
         log.info("Comment created successfully: {}", savedComment.getCommentId());
 
-        return CreateCommentResponse.from(savedComment);
+        // userName 조회 및 추가
+        String userName = userRepository.findById(String.valueOf(userId))
+                .map(com.community.back.domain.auth.domain.User::getName)
+                .orElse("알 수 없음");
+
+        return CreateCommentResponse.from(savedComment, userName);
     }
 
     /**
@@ -92,13 +103,18 @@ public class CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         // 댓글 소유자 검증 (Domain Service에 위임)
-        commentDomainService.validateCommentOwner(comment, userId != null ? userId : 1L);
+        commentDomainService.validateCommentOwner(comment, userId);
 
         // 댓글 내용 수정 (도메인 메서드 사용)
         comment.update(request.getContent());
         log.info("Comment {} updated successfully", commentId);
 
-        return CommentResponse.from(comment);
+        // userName 조회 및 추가
+        String userName = userRepository.findById(String.valueOf(comment.getUserId()))
+                .map(com.community.back.domain.auth.domain.User::getName)
+                .orElse("알 수 없음");
+
+        return CommentResponse.from(comment, userName);
     }
 
     /**
@@ -115,7 +131,7 @@ public class CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         // 댓글 소유자 검증 (Domain Service에 위임)
-        commentDomainService.validateCommentOwner(comment, userId != null ? userId : 1L);
+        commentDomainService.validateCommentOwner(comment, userId);
 
         // 댓글 삭제
         commentRepository.delete(comment);

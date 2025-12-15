@@ -22,7 +22,7 @@ public class Comment {
     @Column(name = "review_id", nullable = false)
     private Long reviewId;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, length = 36)
     private Long userId;
 
     @Column(name = "parent_id")

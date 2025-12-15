@@ -25,6 +25,9 @@ public class CommentResponse {
     @Schema(description = "작성자 ID", example = "1")
     private Long userId;
 
+    @Schema(description = "작성자 이름", example = "홍길동")
+    private String userName;
+
     @Schema(description = "부모 댓글 ID (대댓글인 경우)", example = "1", nullable = true)
     private Long parentId;
 
@@ -42,6 +45,20 @@ public class CommentResponse {
                 .commentId(comment.getCommentId())
                 .reviewId(comment.getReviewId())
                 .userId(comment.getUserId())
+                .userName(null) // userName은 Service에서 설정
+                .parentId(comment.getParentId())
+                .content(comment.getContent())
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
+                .build();
+    }
+
+    public static CommentResponse from(Comment comment, String userName) {
+        return CommentResponse.builder()
+                .commentId(comment.getCommentId())
+                .reviewId(comment.getReviewId())
+                .userId(comment.getUserId())
+                .userName(userName)
                 .parentId(comment.getParentId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
