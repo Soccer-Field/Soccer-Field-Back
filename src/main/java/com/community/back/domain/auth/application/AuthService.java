@@ -43,14 +43,15 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-        // Generate token
-        String token = jwtTokenProvider.createAccessToken(savedUser.getUserId(), savedUser.getEmail());
+        // Generate token with role
+        String token = jwtTokenProvider.createAccessToken(savedUser.getUserId(), savedUser.getEmail(), savedUser.getRole().name());
 
         return SignupResponse.builder()
                 .userId(savedUser.getUserId())
                 .token(token)
                 .name(savedUser.getName())
                 .email(savedUser.getEmail())
+                .role(savedUser.getRole().name())
                 .build();
     }
 
@@ -64,14 +65,15 @@ public class AuthService {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
-        // Generate token
-        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getEmail());
+        // Generate token with role
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getEmail(), user.getRole().name());
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .nickname(user.getName())
+                .role(user.getRole().name())
                 .build();
     }
 
