@@ -1,6 +1,6 @@
-# [프로젝트 제목]
+# [Soccer-Field]
 
-> **배포 URL**: [배포된 서비스 URL]
+> **배포 URL**: https://soccer-field-front.vercel.app/
 > **테스트 계정**: EMAIL: `test@test.com` / PW: `test1234`
 
 ## 📌 프로젝트 소개
@@ -251,6 +251,4 @@ npm run dev
 
 ## 🎥 시연 영상
 
-https://youtu.be/R6pnmo-_x4Y
-
----
+https://youtu.be/R6p
