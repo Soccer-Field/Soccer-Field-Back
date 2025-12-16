@@ -16,7 +16,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query(
             value = "select * from reviews " +
                     "where field_id = :fieldId " +
-                    "order by field_id desc " +
+                    "order by review_id desc " +
                     "limit :limit",
             nativeQuery = true
     )
@@ -28,7 +28,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query(
             value = "select * from reviews " +
                     "where field_id = :fieldId and review_id < :lastReviewId " +
-                    "order by field_id desc " +
+                    "order by review_id desc " +
                     "limit :limit",
             nativeQuery = true
     )
