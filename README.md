@@ -251,6 +251,6 @@ npm run dev
 
 ## 🎥 시연 영상
 
-[YouTube 링크]
+https://youtu.be/R6pnmo-_x4Y
 
 ---
